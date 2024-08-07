@@ -4,20 +4,18 @@ import android.content.Intent
 import android.os.Bundle
 import android.speech.RecognizerIntent
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.result.registerForActivityResult
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.speech_to_text.databinding.ActivityMainBinding
 import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
+
+    private lateinit var shareText: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,12 +33,25 @@ class MainActivity : AppCompatActivity() {
                         .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS) as ArrayList<String>
 
                     binding.tvTapMicro.text = speakResult[0]
+                    shareText = speakResult[0]
                 }
             })
 
         binding.ivMircoPhone.setOnClickListener {
             convertSpeech()
         }
+
+        binding.tvTapMicro.setOnLongClickListener {
+            shareAchievement()
+            true
+        }
+    }
+
+    private fun shareAchievement() {
+        val shareIntent = Intent(Intent.ACTION_SEND)
+        shareIntent.setType("text/plain")
+            .putExtra(Intent.EXTRA_TEXT,shareText)
+        startActivity(shareIntent)
     }
 
     private fun convertSpeech() {
@@ -60,6 +71,7 @@ class MainActivity : AppCompatActivity() {
                 .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS) as ArrayList<String>
 
             binding.tvTapMicro.text = speakResult[0]
+            shareText = speakResult[0]
             activityResultLauncher.launch(intent)
         }
     }
