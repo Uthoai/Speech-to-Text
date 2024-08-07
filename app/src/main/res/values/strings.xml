@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Speech-to-Text</string>
+    <string name="please_tap_the_micro_phone">Please Tap the Micro Phone</string>
+</resources>
